@@ -138,8 +138,8 @@ def load_or_train_model():
 
 # Streamlit app
 def main():
-    st.title("Used Car Price Prediction (India)")
-    st.markdown("**Predict the price of a used car in Jammu, India**")
+    st.title("Used Car Price Prediction")
+    # st.markdown("**Predict the price of a used car in Jammu, India**")
     st.markdown("Enter the car details below to estimate the selling price in INR, including future projections with 5% annual inflation.")
     
     # Load model and encoders
