@@ -6,7 +6,7 @@ from sklearn.ensemble import RandomForestRegressor
 import streamlit as st
 import pickle
 import os
-Function to format numbers in Indian system
+# Function to format numbers in Indian system
 def format_indian_number(number):
     # Convert to integer and string
     s = str(int(number))
