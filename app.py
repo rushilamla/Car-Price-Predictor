@@ -6,24 +6,22 @@ from sklearn.ensemble import RandomForestRegressor
 import streamlit as st
 import pickle
 import os
+
 # Function to format numbers in Indian system
 def format_indian_number(number):
-    # Convert to integer and string
     s = str(int(number))
     if len(s) <= 3:
         return s
-    # Take last 3 digits
     result = s[-3:]
-    # Process remaining digits from right to left in groups of 2
     s = s[:-3]
     while s:
-        # Take up to 2 digits at a time
         result = s[-2:] + "," + result
         s = s[:-2]
-    # Remove leading comma if present
     if result.startswith(","):
         result = result[1:]
     return result
+
+# Custom CSS for improved UI
 st.markdown("""
     <style>
     .main {background-color: #f0f2f6;}
@@ -48,6 +46,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# Function to load or train the model
 def load_or_train_model():
     model_file = 'car_price_model.pkl'
     scaler_file = 'scaler.pkl'
@@ -77,20 +76,24 @@ def load_or_train_model():
             brand_model_map = pickle.load(file)
         return model, scaler, le_brand, le_model, le_fuel, le_trans, le_seller, brand_model_map
     
+    # Load dataset
     try:
         df = pd.read_csv('cardekho_data.csv')
     except FileNotFoundError:
         st.error("Please save your dataset as 'cardekho_data.csv' in the same directory.")
         return None, None, None, None, None, None, None, None
     
+    # Preprocess data
     df = df.dropna()
     X = df[['brand', 'model', 'vehicle_age', 'km_driven', 'fuel_type', 'transmission_type', 'seller_type', 'engine', 'max_power', 'seats']]
     y = df['selling_price']
     
+    # Create brand-model mapping
     brand_model_map = df.groupby('brand')['model'].unique().to_dict()
     for brand in brand_model_map:
         brand_model_map[brand] = list(brand_model_map[brand])
-
+    
+    # Encode categorical variables
     le_brand = LabelEncoder()
     le_model = LabelEncoder()
     le_fuel = LabelEncoder()
@@ -103,14 +106,18 @@ def load_or_train_model():
     X['transmission_type'] = le_trans.fit_transform(X['transmission_type'])
     X['seller_type'] = le_seller.fit_transform(X['seller_type'])
     
+    # Split data
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
+    # Scale features
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
-
+    
+    # Train model
     model = RandomForestRegressor(n_estimators=100, random_state=42)
     model.fit(X_train_scaled, y_train)
-
+    
+    # Save model, encoders, and brand-model map
     with open(model_file, 'wb') as file:
         pickle.dump(model, file)
     with open(scaler_file, 'wb') as file:
@@ -130,16 +137,19 @@ def load_or_train_model():
     
     return model, scaler, le_brand, le_model, le_fuel, le_trans, le_seller, brand_model_map
 
+# Streamlit app
 def main():
-    st.title("Used Car Price Prediction")
-    # st.markdown("**Predict the price of a used car in Jammu, India**")
-    st.markdown("Enter the car details below to estimate the selling price in INR, including future projections with 5% annual inflation.")
+    st.title("Used Car Price Prediction (India)")
+    st.markdown("**Predict the price of a used car in Jammu, India**")
+    st.markdown("Enter the car details below to estimate the selling price in INR, including future projections with 5% annual inflation applied to the original 2025 price.")
     
+    # Load model and encoders
     model, scaler, le_brand, le_model, le_fuel, le_trans, le_seller, brand_model_map = load_or_train_model()
     
     if model is None:
         st.stop()
-
+    
+    # Input fields
     st.subheader("Car Details")
     brand = st.selectbox("Car Brand", le_brand.classes_.tolist(), key="brand")
     models = brand_model_map.get(brand, le_model.classes_.tolist())
@@ -155,6 +165,7 @@ def main():
     max_power = st.slider("Max Power (bhp)", 30.0, 300.0, 80.0)
     seats = st.slider("Number of Seats", 2, 9, 5)
     
+    # Prepare input data for current prediction
     input_data = pd.DataFrame({
         'brand': [brand],
         'model': [model_name],
@@ -167,7 +178,8 @@ def main():
         'max_power': [max_power],
         'seats': [seats]
     })
-
+    
+    # Encode categorical inputs
     try:
         input_data['brand'] = le_brand.transform(input_data['brand'])
         input_data['model'] = le_model.transform(input_data['model'])
@@ -177,13 +189,16 @@ def main():
     except ValueError as e:
         st.error("Selected model is not valid for the chosen brand. Please select a valid combination.")
         st.stop()
-
+    
+    # Scale input data
     input_scaled = scaler.transform(input_data)
     
+    # Predict current price and future prices
     if st.button("Predict Price"):
         current_price = model.predict(input_scaled)[0]
         st.success(f"Predicted Current Car Price (2025): ₹{format_indian_number(current_price)}")
         
+        # Predict prices for next 3 years with 5% inflation on original price
         current_year = 2025
         future_prices = [current_price]
         for year in range(1, 4):
@@ -192,12 +207,15 @@ def main():
             future_data['km_driven'] += year * 10000  # Assume 10,000 km per year
             future_scaled = scaler.transform(future_data)
             future_price = model.predict(future_scaled)[0]
-            # Apply 5% annual inflation
-            inflation_adjusted_price = future_price * (1 + 0.05) ** year
-            future_prices.append(inflation_adjusted_price)
+            # Apply 5% annual inflation to the original 2025 price
+            inflation_adjusted_original = current_price * (1 + 0.05) ** year
+            # Use the model's predicted price (for depreciation) but adjust with inflation from original
+            final_price = min(future_price, inflation_adjusted_original)  # Ensure depreciation is respected
+            future_prices.append(final_price)
         
+        # Create line chart for price trend
         st.subheader("Price Trend Over Next 3 Years")
-        st.markdown("*Note: Future prices assume 10,000 km driven per year and 5% annual inflation, with static market conditions.*")
+        st.markdown("*Note: Future prices reflect model predictions with 10,000 km driven per year and 5% annual inflation applied to the 2025 price, with static market conditions.*")
         price_data = pd.DataFrame({
             'Year': [str(current_year), str(current_year + 1), str(current_year + 2), str(current_year + 3)],
             'Price (₹)': future_prices
