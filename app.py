@@ -6,7 +6,24 @@ from sklearn.ensemble import RandomForestRegressor
 import streamlit as st
 import pickle
 import os
-
+Function to format numbers in Indian system
+def format_indian_number(number):
+    # Convert to integer and string
+    s = str(int(number))
+    if len(s) <= 3:
+        return s
+    # Take last 3 digits
+    result = s[-3:]
+    # Process remaining digits from right to left in groups of 2
+    s = s[:-3]
+    while s:
+        # Take up to 2 digits at a time
+        result = s[-2:] + "," + result
+        s = s[:-2]
+    # Remove leading comma if present
+    if result.startswith(","):
+        result = result[1:]
+    return result
 st.markdown("""
     <style>
     .main {background-color: #f0f2f6;}
