@@ -200,7 +200,7 @@ def plot_feature_importance(model, feature_names):
 
 
 def main():
-    st.title("Advanced Used Car Price Prediction")
+    st.title("Used Car Price Prediction")
     st.markdown("Estimate the selling price of a used car in INR, including future projections with 5% annual inflation and model comparison.")
 
     # Sidebar for model selection
@@ -314,14 +314,6 @@ def main():
             'Price (₹)': future_prices
         })
         st.line_chart(price_data.set_index('Year')['Price (₹)'])
-
-        # Feature importance plot
-        st.subheader("Feature Importance")
-        feature_names = ['Brand', 'Model', 'Vehicle Age', 'KM Driven', 'Fuel Type',
-                         'Transmission', 'Seller Type', 'Engine', 'Max Power', 'Seats']
-        img_str = plot_feature_importance(model, feature_names)
-        st.image(f"data:image/png;base64,{img_str}",
-                 caption="Feature Importance in Prediction")
 
 
 if __name__ == '__main__':
