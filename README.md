@@ -1,71 +1,43 @@
-# AIML Project Suite
+# Car Price Predictor
 
-A comprehensive collection of machine learning and data analysis projects built with Python, featuring multiple applications including placement prediction, car price estimation, and various data analysis tasks.
+A machine learning project that predicts car prices using the CardEkho dataset with pre-trained models and preprocessing pipelines.
 
-## 📋 Projects Overview
+## 📋 Project Overview
 
-### 1. **Placement Prediction System** (`app.py`)
-A Streamlit-based web application that predicts student placement outcomes using Logistic Regression.
+This project uses machine learning to estimate car prices based on various features including brand, model, fuel type, seller type, and other vehicle attributes. The model has been trained and saved for easy inference on new data.
 
-**Features:**
-- Input student metrics (IQ, Previous Grade, CGPA, Performance, Internships, ECA Score, Communication Score, Projects)
-- Real-time placement prediction
-- Interactive user interface
+## 📊 Dataset
 
-**Dataset:** `hello.csv` - Student performance and placement data
+**cardekho_data.csv** - Contains comprehensive car pricing information with features such as:
+- Brand and Model
+- Fuel Type
+- Seller Type
+- Transmission
+- Mileage
+- Engine Power
+- Price (target variable)
 
----
+## 🎯 Features
 
-### 2. **Car Price Prediction** 
-Machine learning models for car price estimation using the CardEkho dataset.
+- Pre-trained machine learning model (`car_price_model.pkl`)
+- Preprocessing transformers for scaling and encoding
+- Ready-to-use label encoders for categorical features
+- Easy-to-load predictions on new car data
 
-**Files:**
-- `cardekho_data.csv` - Car pricing dataset
-- `car_price_model.pkl` - Trained pricing model
-- Associated preprocessing pickle files (`brand_model_map.pkl`, `le_brand.pkl`, `le_fuel.pkl`, `le_model.pkl`, `le_seller.pkl`, `scaler.pkl`)
+## 📁 Project Files
 
----
-
-### 3. **Job Fraud Detection**
-Classification model to identify fraudulent job postings.
-
-**Files:**
-- `FAkeJOb.xlsx` - Fake job dataset
-- `job_fraud_model.pkl` - Trained fraud detection model
-
----
-
-### 4. **Data Analysis Projects**
-Multiple exploratory data analysis notebooks:
-- `day2.ipynb` - Data exploration exercises
-- `day3.ipynb` - Data visualization
-- `day5.ipynb` - Statistical analysis
-- `day9.ipynb` - Advanced analysis
-- `day11.ipynb` - Complex datasets
-- `knn.ipynb` - K-Nearest Neighbors implementation
-- `image.ipynb` - Image processing analysis
-- `ds.ipynb` - Data science fundamentals
-- `new.ipynb` - Additional analysis
-
----
-
-## 📊 Datasets Included
-
-- **cardekho_data.csv** - Car pricing information
-- **hello.csv** - Student placement data
-- **cereal.csv** - Cereal nutrition data
-- **Student_Performance.csv** - Academic performance records
-- **heart.csv** - Heart disease data
-- **indian_food.csv** - Indian food dataset
-- **imdb_data.csv** - IMDB movie data
-- **phishing_site_urls.csv** - Phishing dataset
-- **dublin_bus_data.csv** - Public transport data
-- **employee.csv** - Employee records
-- **Food_Preference.csv** - Food preferences
-- **Iris - all-numbers.csv** - Iris flower classification data
-- **Cleaned_Advertisements.csv** - Advertisement data
-
----
+```
+├── cardekho_data.csv          # Dataset with car information
+├── car_price_model.pkl        # Trained price prediction model
+├── brand_model_map.pkl        # Brand-to-model mapping
+├── le_brand.pkl               # Label encoder for brands
+├── le_fuel.pkl                # Label encoder for fuel types
+├── le_model.pkl               # Label encoder for car models
+├── le_seller.pkl              # Label encoder for seller types
+├── le_trans.pkl               # Label encoder for transmission
+├── scaler.pkl                 # Feature scaler
+└── README.md                  # This file
+```
 
 ## 🚀 Getting Started
 
@@ -78,7 +50,7 @@ Multiple exploratory data analysis notebooks:
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd AIML
+   cd car-price-predictor
    ```
 
 2. **Create a virtual environment (optional but recommended)**
@@ -97,113 +69,54 @@ Multiple exploratory data analysis notebooks:
    pip install -r requirements.txt
    ```
 
----
-
 ## 💻 Usage
 
-### Running the Placement Prediction App
+### Loading and Using the Model
 
-```bash
-streamlit run app.py
+```python
+import pickle
+import pandas as pd
+
+# Load the pre-trained model and preprocessing objects
+with open('car_price_model.pkl', 'rb') as f:
+    model = pickle.load(f)
+
+with open('scaler.pkl', 'rb') as f:
+    scaler = pickle.load(f)
+
+with open('le_brand.pkl', 'rb') as f:
+    le_brand = pickle.load(f)
+
+# Prepare your data
+# (encode categorical variables and scale features)
+
+# Make predictions
+predicted_price = model.predict(X_new)
 ```
-
-The app will open in your default web browser at `http://localhost:8501`
-
-**Input the following information:**
-- IQ score
-- Previous Grade
-- CGPA (Cumulative GPA)
-- Performance rating
-- Number of Internships
-- ECA Score
-- Communication Score
-- Number of Projects
-
-Click **"Analyze"** to get the placement prediction.
-
----
-
-### Running Jupyter Notebooks
-
-```bash
-jupyter notebook
-```
-
-Then select the notebook file you want to explore.
-
----
-
-## 📁 Project Structure
-
-```
-AIML/
-├── app.py                          # Main Streamlit placement prediction app
-├── requirements.txt                # Python dependencies
-├── README.md                       # This file
-│
-├── Models (Trained)
-│   ├── car_price_model.pkl        # Car price prediction model
-│   ├── job_fraud_model.pkl        # Job fraud detection model
-│   └── *.pkl                      # Preprocessing and scaling files
-│
-├── Data Files (CSV)
-│   ├── cardekho_data.csv
-│   ├── hello.csv
-│   ├── cereal.csv
-│   ├── Student_Performance.csv
-│   └── [other CSV files]
-│
-├── Notebooks (Jupyter)
-│   ├── day2.ipynb through day11.ipynb
-│   ├── knn.ipynb
-│   └── [other analysis notebooks]
-│
-└── Python Scripts
-    ├── abba.py
-    ├── jfd.py
-    ├── piyush.py
-    └── project.py, project2.py
-```
-
----
 
 ## 🔧 Technologies Used
 
 - **Python** - Programming language
-- **Streamlit** - Web app framework
 - **Pandas** - Data manipulation
 - **Scikit-learn** - Machine learning
-- **Jupyter Notebook** - Interactive analysis
+- **Pickle** - Model serialization
 
----
+## 📈 Model Details
 
-## 📈 Models & Algorithms
-
-- **Logistic Regression** - Placement prediction
-- **K-Nearest Neighbors (KNN)** - Classification tasks
-- **Preprocessing techniques** - Scaling, encoding, feature engineering
-
----
+- Pre-trained regression model
+- Includes feature preprocessing and scaling
+- Label encoders for categorical variables
+- Ready for immediate predictions
 
 ## 📝 Notes
 
-- Pickle files (.pkl) contain pre-trained models and preprocessing transformers
-- CSV files are provided for training and testing
-- Jupyter notebooks include exploratory data analysis and model experimentation
-
----
+- All pickle files (.pkl) contain pre-trained models and preprocessing transformers
+- Ensure features are in the correct order when making predictions
+- The scaler should be applied before feeding data to the model
 
 ## 🤝 Contributing
 
 Feel free to fork this project and submit pull requests for improvements.
-
----
-
-## 📧 Contact
-
-For questions or suggestions, please reach out!
-
----
 
 ## 📄 License
 
