@@ -2,11 +2,11 @@
 
 A machine learning project that predicts car prices using the CardEkho dataset with pre-trained models and preprocessing pipelines.
 
-## 📋 Project Overview
+## Project Overview
 
 This project uses machine learning to estimate car prices based on various features including brand, model, fuel type, seller type, and other vehicle attributes. The model has been trained and saved for easy inference on new data.
 
-## 📊 Dataset
+## Dataset
 
 **cardekho_data.csv** - Contains comprehensive car pricing information with features such as:
 - Brand and Model
@@ -17,14 +17,14 @@ This project uses machine learning to estimate car prices based on various featu
 - Engine Power
 - Price (target variable)
 
-## 🎯 Features
+## Features
 
 - Pre-trained machine learning model (`car_price_model.pkl`)
 - Preprocessing transformers for scaling and encoding
 - Ready-to-use label encoders for categorical features
 - Easy-to-load predictions on new car data
 
-## 📁 Project Files
+## Project Files
 
 ```
 ├── cardekho_data.csv          # Dataset with car information
@@ -39,7 +39,7 @@ This project uses machine learning to estimate car prices based on various featu
 └── README.md                  # This file
 ```
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Python 3.7 or higher
@@ -69,7 +69,7 @@ This project uses machine learning to estimate car prices based on various featu
    pip install -r requirements.txt
    ```
 
-## 💻 Usage
+## Usage
 
 ### Loading and Using the Model
 
@@ -94,30 +94,30 @@ with open('le_brand.pkl', 'rb') as f:
 predicted_price = model.predict(X_new)
 ```
 
-## 🔧 Technologies Used
+## Technologies Used
 
 - **Python** - Programming language
 - **Pandas** - Data manipulation
 - **Scikit-learn** - Machine learning
 - **Pickle** - Model serialization
 
-## 📈 Model Details
+## Model Details
 
 - Pre-trained regression model
 - Includes feature preprocessing and scaling
 - Label encoders for categorical variables
 - Ready for immediate predictions
 
-## 📝 Notes
+## Notes
 
 - All pickle files (.pkl) contain pre-trained models and preprocessing transformers
 - Ensure features are in the correct order when making predictions
 - The scaler should be applied before feeding data to the model
 
-## 🤝 Contributing
+## Contributing
 
 Feel free to fork this project and submit pull requests for improvements.
 
-## 📄 License
+## License
 
 This project is open source and available under the MIT License.
